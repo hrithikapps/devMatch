@@ -1,0 +1,19 @@
+{
+  "name": "devmatch",
+  "version": "1.0.0",
+  "description": "Matchmaking / Tinder for Developers ",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "keywords": [
+    "JavaScript",
+    "NodeJs"
+  ],
+  "author": "Kumar Hrithik",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
