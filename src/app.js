@@ -2,12 +2,10 @@ const express = require("express");
 
 const app = express();
 
-app.use("/contact", (req, res) => {
-  res.send("This is the contact us Page");
-});
-
-app.use("/", (req, res) => {
-  res.send("Namaste");
+app.get("/user/:userId/:name/:password", (req, res) => {
+  //route handler
+  console.log(req.params);
+  res.send({ firstName: "Kumar", lastName: "Hrithik" });
 });
 
 app.listen(1234, () => {
