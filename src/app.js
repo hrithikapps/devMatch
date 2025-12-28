@@ -1,13 +1,15 @@
 const express = require("express");
-
+const connectDB = require("./config/database");
 const app = express();
 
-app.get("/user/:userId/:name/:password", (req, res) => {
-  //route handler
-  console.log(req.params);
-  res.send({ firstName: "Kumar", lastName: "Hrithik" });
-});
-
-app.listen(1234, () => {
-  console.log("Server is running on Port 1234");
-});
+connectDB()
+  .then(() => {
+    console.log("Database connection established");
+    app.listen(1234, () => {
+      console.log("Server is successfuly listening to port 1234");
+    });   
+  })
+  .catch((err) => {
+    console.log("Database cannot be connected");
+    console.error(err);
+  });
