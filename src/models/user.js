@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
     lastName: {
       type: String,
     },
-    email: {
+    emailId: {
       type: String,
       lowercase: true,
       required: true,
@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      validate(value) {
+        if (!validator.isStrongPassword(value)) {
+          throw new Error(`Enter a strong Password ${value}`);
+        }
+      },
     },
     age: {
       type: Number,
@@ -45,6 +50,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default:
         "https://www.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_134151661.htm",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error(`Invalid photoUrl ${value}`);
+        }
+      },
     },
     about: {
       type: String,
