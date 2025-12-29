@@ -1,8 +1,9 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const User = require("./models/user");
-const validateSignUpData = require("./utils/validation");
+const { validateSignUpData } = require("./utils/validation");
 const app = express();
+const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
@@ -23,22 +24,45 @@ app.get("/user", async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-  //validation of data
-  validateSignUpData(req);
-  const { firstName, lastName, emailId, password } = req.body;
-
-  //Encrypt the password
-  const passwordHash = await bcrypt.hash(password, 10);
-  console.log(passwordHash);
-  
-  //creating a new isntance of the user model
-  const user = new User(req.body);
   try {
+    //validation of data
+    validateSignUpData(req);
+    const { firstName, lastName, emailId, password } = req.body;
+
+    //Encrypt the password
+    const passwordHash = await bcrypt.hash(password, 10);
+    console.log(passwordHash);
+
+    //creating a new isntance of the user model
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
     await user.save();
     res.status(300).send("User added successfully");
   } catch (err) {
     console.error(err);
     res.status(400).send(err.message);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("EmailId is not present in DB");
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (isPasswordValid) {
+      res.send("Login successful");
+    } else {
+      throw new Error("Invalid credentials");
+    }
+  } catch (error) {
+    res.status(400).send(`Error: ${error.message}`);
   }
 });
 
